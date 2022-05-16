@@ -1,0 +1,10 @@
+LOAD CSV WITH HEADERS FROM 'file:///triplets_for_neo4j.csv' AS line
+WITH line WHERE line.subject IS NOT NULL AND line.object IS NOT NULL
+MERGE (sub:Subject {name: line.subject}) 
+MERGE (obj:Object {name: line.object}) 
+WITH sub, obj, line
+CALL apoc.merge.relationship(sub,line.predicate,{},{},obj) YIELD rel AS rl
+SET rl.pubmed_id = line.pubmed_id, rl.doi = line.doi, rl.publication_date = line.publication_date, rl.issn_online = line.issn_online,rl.issn_print = line.issn_print, rl.SJR = line.SJR,rl.SJR_rank = line.SJR_rank
+RETURN sub, type(rl), obj, line
+
+
