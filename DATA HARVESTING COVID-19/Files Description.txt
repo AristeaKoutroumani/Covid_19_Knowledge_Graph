@@ -1,0 +1,33 @@
+8 July 2020 -  15051(from  29464) covid-19 articles from PubMed produced x triplets from Semrep
+
+Produced by "1.pubmedQuery.py"
+"pubmed_dataframe.csv" : contains all the article data downloaded from pubmed using pymed in csv and json format
+Fields : title,keywords,journal,abstract,conclusions,methods,results,copyrights,doi,publication_date,authors
+"pubmed_quality.csv" : contains pubmedid,doi,publication date along with the abstract, this is passed to semrep in order to maintain identification values for each triplet based on the article the came from
+Fields : 1.pubmed_id, 2.doi,3.publication_date,abastract
+
+
+Produced by Semrep online batch processing of the file "pubmed_quality.csv"
+"covid-19.out"
+contains the raw data that is passed to the batch processor that includes pubmed_id,doi,publication_date,abstracts and the relational triplets produced by the semantic processing of the abstracts
+
+Produced by "2.tripletsProcessing.py"
+"triplets.csv" : contains the triplets that are included in "covid-19.out", each triplet has additional info for PubmedId,doi and publication date of the article it came from
+Fields : subject,predicate,object,pubmed_id,doi,publication_date
+
+Produced by "3.tripletsDataset.py"
+"PubmedJournals.csv" :contains the information harvested from "All Journals in Pubmed.text" that contains the ISSN print and ISSN online for each journal
+Fields : ISSN(Online),ISSN(Print),journal
+"triplets_for_neo4j.csv" :  the final dataset for the triplets to be imported in neo4j which includes the semantic triplets (subject,predicate,object) article info (pubmed_id,doi,publication_date) and journal info (journal,ISSN,SJR and SJR_rank)
+fields:subject,predicate,object,pubmed_id,doi,publication_date,issn_online,issn_print,SJR,SJR_rank
+
+
+Produced by "4.authorsDataset.py"
+"authors_for_neo4j.csv" :  the final dataset for the authors and the info of the article each one has contributed in with quality info in a csv file that will be ready to be imported in neo4j 
+fields:author_firstname,author_lastname,author_name,doi,journal,publication_date,pubmed_id,title,SJR_rank,issn_online,issn_print,SJR
+
+Produced by "5.articlesDataset.py"
+"articles_journals_for_neo4j.csv" :  the articles,the journals they were published in and their SJR ranking information in a csv file that will be ready to be imported in neo4j 
+fields:abstract,authors,conclusions,copyrights,doi,journal,keywords,methods,publication_date,pubmed_id,results,title,issn_online,issn_print,SJR_rank,SJR
+
+
