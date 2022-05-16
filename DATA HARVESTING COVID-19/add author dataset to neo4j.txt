@@ -1,0 +1,9 @@
+:auto USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///authors_for_neo4j.csv' AS line
+WITH line WHERE line.author_name IS NOT NULL AND line.title IS NOT NULL
+MERGE (n:Author {name: line.author_name}) 
+MERGE (a:Article {name: line.title}) 
+WITH n, a, line
+CALL apoc.merge.relationship(n,"WROTE_ARTICLE",{},{},a) YIELD rel AS rl
+SET a.pubmed_id = line.pubmed_id, a.doi = line.doi, a.publication_date = line.publication_date, a.issn_online = line.issn_online,a.issn_print = line.issn_print, a.SJR = line.SJR,a.SJR_rank = line.SJR_rank
+RETURN n, type(rl), a, line
